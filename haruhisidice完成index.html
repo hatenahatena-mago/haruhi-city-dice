@@ -1,0 +1,1517 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17201a">
+
+<title>陽日市怪異事件ファイル｜ダイス</title>
+
+<style>
+
+  :root{
+    --bg:#17201a;
+    --panel:#243126;
+    --panel2:#1d281f;
+    --text:#f4f0df;
+    --muted:#c6c2ae;
+    --accent:#d9b85b;
+    --danger:#d66a61;
+    --success:#8fc77a;
+    --line:#60705e;
+  }
+
+  *{
+    box-sizing:border-box;
+  }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",
+      "Yu Gothic",Meiryo,sans-serif;
+
+    background:
+      radial-gradient(
+        circle at top,
+        #314336 0%,
+        var(--bg) 48%,
+        #101610 100%
+      );
+  }
+
+  main{
+    width:min(720px, 100%);
+    margin:0 auto;
+    padding:24px 16px 40px;
+  }
+
+  header{
+    text-align:center;
+    padding:14px 8px 18px;
+  }
+
+  .badge{
+    display:inline-block;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:.8rem;
+    letter-spacing:.08em;
+  }
+
+  h1{
+    font-size:clamp(1.55rem,6vw,2.3rem);
+    margin:12px 0 6px;
+    letter-spacing:.04em;
+  }
+
+  .subtitle{
+    margin:0;
+    color:var(--muted);
+    font-size:.95rem;
+  }
+
+  .panel{
+    background:rgba(36,49,38,.92);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    margin-top:14px;
+  }
+
+
+
+
+  /* ==============================
+     探索者タイプ
+     ============================== */
+
+  .type-title{
+    text-align:center;
+    color:var(--muted);
+    font-size:.9rem;
+    margin-bottom:8px;
+  }
+
+  #typeSelect{
+    width:100%;
+    min-height:52px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    padding:8px 12px;
+    font:inherit;
+    font-size:1.05rem;
+    background:#d8dfc9;
+    color:#17201a;
+  }
+
+  .status{
+    margin-top:14px;
+    padding:14px;
+    background:rgba(29,40,31,.82);
+    border:1px solid var(--line);
+    border-radius:16px;
+  }
+
+  .status-name{
+    text-align:center;
+    font-size:1.2rem;
+    font-weight:800;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+
+  .status-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .status-item{
+    background:rgba(0,0,0,.15);
+    border-radius:10px;
+    padding:8px 10px;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .status-item strong{
+    color:var(--muted);
+  }
+
+
+  /* ==============================
+     判定
+     ============================== */
+
+  .check-area{
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+  }
+
+  .check-title{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+
+  #statSelect{
+    width:100%;
+    min-height:48px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    padding:8px 12px;
+    font:inherit;
+    font-size:1.05rem;
+    background:#d8dfc9;
+    color:#17201a;
+  }
+
+  #target{
+    text-align:center;
+    font-size:1.1rem;
+    margin:10px 0;
+    color:var(--accent);
+    font-weight:800;
+  }
+
+  #checkButton,
+  #skillCheckButton{
+    width:100%;
+    min-height:64px;
+    margin-top:6px;
+    appearance:none;
+    border:0;
+    border-radius:16px;
+    padding:12px 18px;
+    font:inherit;
+    font-size:1.25rem;
+    font-weight:800;
+    cursor:pointer;
+    color:#17201a;
+    background:var(--accent);
+    box-shadow:
+      0 5px 0 #9d803a,
+      0 10px 20px rgba(0,0,0,.22);
+    touch-action:manipulation;
+  }
+
+  #checkButton:active,
+  #skillCheckButton:active{
+    transform:translateY(4px);
+    box-shadow:0 1px 0 #9d803a;
+  }
+
+#checkResult,
+#skillResult{
+  text-align:center;
+  min-height:2em;
+  margin-top:12px;
+  padding:12px;
+  font-size:1.5rem;
+  font-weight:900;
+}
+
+  .success{
+    color:var(--success);
+  }
+
+  .failure{
+    color:var(--danger);
+  }
+
+
+  /* ==============================
+     自由技能
+     ============================== */
+
+  .skill-area{
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+  }
+
+  .skill-title{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+
+  .skill-label{
+    display:block;
+    margin-top:12px;
+    color:var(--text);
+    font-weight:700;
+  }
+
+  #skillValue{
+    width:100%;
+    margin-top:6px;
+    padding:12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#f4f0df;
+    color:#17201a;
+    font:inherit;
+    font-size:1.1rem;
+  }
+
+  /* ==============================
+     通常ダイス
+     ============================== */
+
+  .result-label{
+    text-align:center;
+    color:var(--muted);
+    font-size:.9rem;
+    margin-bottom:4px;
+    margin-top:22px;
+  }
+
+  #result{
+    min-height:130px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:clamp(4.8rem,24vw,8rem);
+    font-weight:800;
+    letter-spacing:.02em;
+    font-variant-numeric:tabular-nums;
+    text-shadow:0 5px 16px rgba(0,0,0,.35);
+    transition:transform .15s ease;
+  }
+
+  #result.rolling{
+    transform:scale(1.06);
+  }
+
+  #diceName{
+    text-align:center;
+    color:var(--accent);
+    min-height:1.4em;
+    font-weight:700;
+    margin-top:-8px;
+  }
+
+  .buttons{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-top:16px;
+  }
+
+  button{
+    appearance:none;
+    border:0;
+    border-radius:16px;
+    min-height:64px;
+    padding:12px 18px;
+    font:inherit;
+    font-size:1.25rem;
+    font-weight:800;
+    cursor:pointer;
+    color:#17201a;
+    background:var(--accent);
+
+    box-shadow:
+      0 5px 0 #9d803a,
+      0 10px 20px rgba(0,0,0,.22);
+
+    transition:
+      transform .08s ease,
+      filter .15s ease;
+
+    touch-action:manipulation;
+  }
+
+  button:active{
+    transform:translateY(4px);
+    box-shadow:0 1px 0 #9d803a;
+  }
+
+  button:hover{
+    filter:brightness(1.07);
+  }
+
+  .subbuttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .subbuttons button{
+    min-height:52px;
+    font-size:1rem;
+    background:#d8dfc9;
+    box-shadow:
+      0 4px 0 #89917e,
+      0 8px 16px rgba(0,0,0,.18);
+  }
+
+
+  /* ==============================
+     履歴
+     ============================== */
+
+  .history{
+    margin-top:16px;
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+  }
+
+  .history h2{
+    font-size:1rem;
+    margin:0 0 8px;
+    color:var(--muted);
+  }
+
+  #historyList{
+    margin:0;
+    padding-left:1.4em;
+    color:var(--text);
+    line-height:1.8;
+    min-height:1.8em;
+  }
+
+  .clear{
+    margin-top:8px;
+    min-height:auto;
+    padding:8px 12px;
+    font-size:.82rem;
+    color:var(--muted);
+    background:transparent;
+    border:1px solid var(--line);
+    box-shadow:none;
+  }
+
+
+  /* ==============================
+     説明
+     ============================== */
+
+  .guide{
+    margin-top:14px;
+    background:rgba(29,40,31,.82);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px 16px;
+    color:var(--muted);
+    line-height:1.7;
+    font-size:.92rem;
+  }
+
+  .guide strong{
+    color:var(--text);
+  }
+
+  footer{
+    text-align:center;
+    color:#a9aa9d;
+    font-size:.75rem;
+    margin-top:18px;
+  }
+
+
+  @media (min-width:600px){
+
+    .buttons{
+      grid-template-columns:1.4fr .6fr;
+    }
+
+    .subbuttons{
+      grid-template-columns:1fr;
+    }
+
+  }
+
+</style>
+</head>
+
+
+<body>
+
+<main>
+
+
+<header>
+
+  <div class="badge">
+    CALL of CTHULHU -HARUHI CITY OCCULT INVESTIGATION-
+  </div>
+
+  <h1>新クトゥルフ神話TRPG</h1>
+
+  <p class="subtitle">
+    陽日市怪異事件ファイル
+  </p>
+
+</header>
+
+<!-- =====================================
+     説明
+     ===================================== -->
+
+<section class="guide">
+
+  <strong>使い方</strong><br>
+
+  ① パワー～アイドルの探索者タイプを選びます。<br>
+
+  ② 能力値判定をする場合は、能力値を選んで「能力値判定！」を押します。<br>
+
+  ③ 技能を使用する場合は、キャラクターシートの成功率を入力して「技能判定！」を押します。<br>
+
+  出目が指定された数字以下なら成功です。<br>
+
+  ④幸運を決める場合はページ下部の「幸運決定」を押してください。
+
+</section>
+
+
+<!-- =====================================
+     探索者タイプ
+     ===================================== -->
+
+<section class="panel">
+
+  <div class="type-title">
+    探索者タイプを選択してください
+  </div>
+
+
+  <select id="typeSelect">
+
+    <option value="power">
+      ① パワータイプ
+    </option>
+
+    <option value="brain">
+      ② ブレインタイプ
+    </option>
+
+    <option value="technique">
+      ③ テクニックタイプ
+    </option>
+
+    <option value="tough">
+      ④ タフネスタイプ
+    </option>
+
+    <option value="sanity">
+      ⑤ サニティタイプ
+    </option>
+
+    <option value="idol">
+      ⑥ アイドルタイプ
+    </option>
+
+  </select>
+
+
+
+  <div class="status">
+
+    <div class="status-name" id="typeName">
+      パワータイプ
+    </div>
+
+
+    <div class="status-grid">
+
+      <div class="status-item">
+        <strong>STR</strong>
+        <span id="STR">80</span>
+      </div>
+
+      <div class="status-item">
+        <strong>DEX</strong>
+        <span id="DEX">60</span>
+      </div>
+
+      <div class="status-item">
+        <strong>INT</strong>
+        <span id="INT">40</span>
+      </div>
+
+      <div class="status-item">
+        <strong>CON</strong>
+        <span id="CON">70</span>
+      </div>
+
+      <div class="status-item">
+        <strong>APP</strong>
+        <span id="APP">50</span>
+      </div>
+
+      <div class="status-item">
+        <strong>POW</strong>
+        <span id="POW">50</span>
+      </div>
+
+      <div class="status-item">
+        <strong>SIZ</strong>
+        <span id="SIZ">60</span>
+      </div>
+
+      <div class="status-item">
+        <strong>EDU</strong>
+        <span id="EDU">50</span>
+      </div>
+
+      <div class="status-item">
+        <strong>移動率</strong>
+        <span id="MOV">8</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================
+       能力値判定
+       ===================================== -->
+
+  <div class="check-area">
+
+    <div class="check-title">
+      判定する能力値を選んでください
+    </div>
+
+
+    <select id="statSelect">
+
+      <option value="STR">
+        STR（筋力）
+      </option>
+
+      <option value="DEX">
+        DEX（敏捷）
+      </option>
+
+      <option value="INT">
+        INT（知性）
+      </option>
+
+      <option value="CON">
+        CON（体力）
+      </option>
+
+      <option value="APP">
+        APP（外見）
+      </option>
+
+      <option value="POW">
+        POW（精神）
+      </option>
+
+      <option value="EDU">
+        EDU（教育）
+      </option>
+
+    </select>
+
+
+    <div id="target">
+      STR 80％
+    </div>
+
+
+    <button id="checkButton" type="button">
+      🎲 能力値判定！
+    </button>
+
+
+    <div id="checkResult"></div>
+
+
+
+    <!-- =====================================
+         自由技能判定
+         ===================================== -->
+
+    <div class="skill-area">
+
+      <div class="skill-title">
+        技能判定
+      </div>
+
+
+      <label class="skill-label">
+        成功率
+
+        <input
+          id="skillValue"
+          type="number"
+          min="0"
+          max="100"
+          placeholder="例：60"
+        >
+
+      </label>
+
+ <button id="skillCheckButton" type="button">
+        🎲 技能判定！
+      </button>
+      <div id="skillResult">
+        成功率を入力すると、1d100で技能判定できます。
+      </div>
+     
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =====================================
+     通常ダイス
+     ===================================== -->
+
+<section class="panel" aria-live="polite">
+
+  <div class="result-label">
+    直前の出目
+  </div>
+
+
+  <div id="result">
+    ?
+  </div>
+
+
+  <div id="diceName">
+    ダイスを選んでください
+  </div>
+
+
+  <div class="buttons">
+
+    <button id="d100" type="button">
+      🎲 1d100 を振る
+    </button>
+
+
+    <div class="subbuttons">
+
+      <button id="3d6" type="button">
+        🎲 幸運決定
+      </button>
+
+      <button id="d6" type="button">
+        🎲 1d6
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- 履歴 -->
+
+  <div class="history">
+
+    <h2>
+      記録
+    </h2>
+
+
+    <ol id="historyList"></ol>
+
+
+    <button
+      class="clear"
+      id="clearHistory"
+      type="button">
+
+      記録を消去
+
+    </button>
+
+  </div>
+
+</section>
+
+
+
+
+
+
+<footer>
+
+  新クトゥルフ神話TRPG　向陽祭用ダイスツール
+
+</footer>
+
+
+</main>
+
+
+
+<script>
+
+(() => {
+
+
+  /* =====================================
+     HTMLの部品を取得
+     ===================================== */
+
+  const result =
+    document.getElementById('result');
+
+  const diceName =
+    document.getElementById('diceName');
+
+  const historyList =
+    document.getElementById('historyList');
+
+  const typeSelect =
+    document.getElementById('typeSelect');
+
+  const typeName =
+    document.getElementById('typeName');
+
+  const statSelect =
+    document.getElementById('statSelect');
+
+  const target =
+    document.getElementById('target');
+
+  const checkResult =
+    document.getElementById('checkResult');
+
+  const skillValue =
+    document.getElementById('skillValue');
+
+  const skillResult =
+    document.getElementById('skillResult');
+
+
+
+  /* =====================================
+     探索者タイプのデータ
+     ===================================== */
+
+  const characterTypes = {
+
+    power: {
+
+      name:"パワータイプ",
+
+      STR:80,
+      DEX:60,
+      INT:40,
+      CON:70,
+      APP:50,
+      POW:50,
+      SIZ:60,
+      EDU:50,
+      MOV:8
+
+    },
+
+
+    brain: {
+
+      name:"ブレインタイプ",
+
+      STR:40,
+      DEX:50,
+      INT:70,
+      CON:50,
+      APP:60,
+      POW:60,
+      SIZ:50,
+      EDU:80,
+      MOV:8
+
+    },
+
+
+    technique: {
+
+      name:"テクニックタイプ",
+
+      STR:50,
+      DEX:80,
+      INT:60,
+      CON:50,
+      APP:60,
+      POW:70,
+      SIZ:50,
+      EDU:40,
+      MOV:8
+
+    },
+
+
+    tough: {
+
+      name:"タフネスタイプ",
+
+      STR:50,
+      DEX:40,
+      INT:40,
+      CON:80,
+      APP:60,
+      POW:60,
+      SIZ:70,
+      EDU:50,
+      MOV:8
+
+    },
+
+
+    sanity: {
+
+      name:"サニティタイプ",
+
+      STR:60,
+      DEX:40,
+      INT:60,
+      CON:70,
+      APP:50,
+      POW:80,
+      SIZ:50,
+      EDU:50,
+      MOV:8
+
+    },
+
+
+    idol: {
+
+      name:"アイドルタイプ",
+
+      STR:50,
+      DEX:70,
+      INT:40,
+      CON:60,
+      APP:80,
+      POW:60,
+      SIZ:50,
+      EDU:50,
+      MOV:8
+
+    }
+
+  };
+
+
+
+  /* =====================================
+     乱数を作る
+     ===================================== */
+
+  function randomInt(max){
+
+    if(
+      window.crypto &&
+      window.crypto.getRandomValues
+    ){
+
+      const range = 0x100000000;
+
+      const limit =
+        range - (range % max);
+
+      const array =
+        new Uint32Array(1);
+
+      let value;
+
+      do{
+
+        window.crypto.getRandomValues(array);
+
+        value = array[0];
+
+      }while(value >= limit);
+
+
+      return (value % max) + 1;
+
+    }
+
+
+    return Math.floor(
+      Math.random() * max
+    ) + 1;
+
+  }
+
+
+
+  /* =====================================
+     履歴表示
+     ===================================== */
+
+  const history = [];
+
+
+  function renderHistory(){
+
+    historyList.innerHTML = '';
+
+
+    history
+      .slice(0,10)
+      .forEach(item => {
+
+        const li =
+          document.createElement('li');
+
+        li.textContent = item;
+
+        historyList.appendChild(li);
+
+      });
+
+  }
+
+
+
+  /* =====================================
+     探索者タイプ変更
+     ===================================== */
+
+  function changeCharacterType(){
+
+    const type =
+      characterTypes[typeSelect.value];
+
+
+    typeName.textContent =
+      type.name;
+
+
+    document.getElementById('STR').textContent =
+      type.STR;
+
+    document.getElementById('DEX').textContent =
+      type.DEX;
+
+    document.getElementById('INT').textContent =
+      type.INT;
+
+    document.getElementById('CON').textContent =
+      type.CON;
+
+    document.getElementById('APP').textContent =
+      type.APP;
+
+    document.getElementById('POW').textContent =
+      type.POW;
+
+    document.getElementById('SIZ').textContent =
+      type.SIZ;
+
+    document.getElementById('EDU').textContent =
+      type.EDU;
+
+    document.getElementById('MOV').textContent =
+      type.MOV;
+
+
+    updateTarget();
+
+
+    checkResult.textContent =
+      "";
+
+    checkResult.className =
+      "";
+
+  }
+
+
+
+  /* =====================================
+     能力値選択変更
+     ===================================== */
+
+  function updateTarget(){
+
+    const type =
+      characterTypes[typeSelect.value];
+
+    const stat =
+      statSelect.value;
+
+    const value =
+      type[stat];
+
+
+    target.textContent =
+      `${stat} ${value}%`;
+
+  }
+
+
+
+  /* =====================================
+     能力値判定
+     ===================================== */
+
+  function abilityCheck(){
+
+    const type =
+      characterTypes[typeSelect.value];
+
+    const stat =
+      statSelect.value;
+
+    const value =
+      type[stat];
+
+
+    result.classList.add('rolling');
+
+    result.textContent =
+      '…';
+
+    diceName.textContent =
+      '1d100 を振っています…';
+
+
+    setTimeout(() => {
+
+      const dice =
+        randomInt(100);
+
+
+      result.textContent =
+        dice;
+
+      diceName.textContent =
+        `1d100 → ${dice}`;
+
+
+      result.classList.remove('rolling');
+
+
+      const success =
+        dice <= value;
+
+
+      if(success){
+
+        checkResult.textContent =
+          `🎉 成功！　${dice} ≦ ${value}`;
+
+        checkResult.className =
+          "success";
+
+      }else{
+
+        checkResult.textContent =
+          `❌ 失敗……　${dice} ＞ ${value}`;
+
+        checkResult.className =
+          "failure";
+
+      }
+
+
+      history.unshift(
+        `${stat} ${value}% → ${dice} → ` +
+        (success ? "成功" : "失敗")
+      );
+
+
+      if(history.length > 10){
+
+        history.pop();
+
+      }
+
+
+      renderHistory();
+
+    },180);
+
+  }
+
+
+
+  /* =====================================
+     通常の1d100
+     技能判定もここで行う
+     ===================================== */
+
+  function rollD100(){
+
+    const input =
+      skillValue.value.trim();
+
+
+    /*
+     * 成功率が空欄なら
+     * 純粋な1d100として扱う
+     */
+
+    if(input === ""){
+
+      result.classList.add('rolling');
+
+      result.textContent =
+        '…';
+
+      diceName.textContent =
+        '1d100 を振っています…';
+
+
+      setTimeout(() => {
+
+        const dice =
+          randomInt(100);
+
+
+        result.textContent =
+          dice;
+
+        diceName.textContent =
+          `1d100 → ${dice}`;
+
+
+        result.classList.remove('rolling');
+
+
+        history.unshift(
+          `1d100 → ${dice}`
+        );
+
+
+        if(history.length > 10){
+
+          history.pop();
+
+        }
+
+
+        renderHistory();
+
+
+      },180);
+
+
+      return;
+
+    }
+
+
+
+    /* ==============================
+       成功率を数字にする
+       ============================== */
+
+    const skill =
+      Number(input);
+
+
+    if(
+      !Number.isFinite(skill) ||
+      skill < 0 ||
+      skill > 100
+    ){
+
+      skillResult.textContent =
+        "成功率は0～100の数字で入力してください。";
+
+      skillResult.className =
+        "failure";
+
+      return;
+
+    }
+
+
+
+    /* ==============================
+       自由技能の1d100
+       ============================== */
+
+    result.classList.add('rolling');
+
+    result.textContent =
+      '…';
+
+    diceName.textContent =
+      '1d100 を振っています…';
+
+
+    setTimeout(() => {
+
+      const dice =
+        randomInt(100);
+
+
+      result.textContent =
+        dice;
+
+      diceName.textContent =
+        `1d100 → ${dice}`;
+
+
+      result.classList.remove('rolling');
+
+
+      const success =
+        dice <= skill;
+
+
+      if(success){
+
+        skillResult.textContent =
+          `🎉 成功！　${dice} ≦ ${skill}`;
+
+        skillResult.className =
+          "success";
+
+      }else{
+
+        skillResult.textContent =
+          `❌ 失敗……　${dice} ＞ ${skill}`;
+
+        skillResult.className =
+          "failure";
+
+      }
+
+
+      history.unshift(
+        `技能 ${skill}% → ${dice} → ` +
+        (success ? "成功" : "失敗")
+      );
+
+
+      if(history.length > 10){
+
+        history.pop();
+
+      }
+
+
+      renderHistory();
+
+
+    },180);
+
+  }
+
+
+
+  /* =====================================
+     幸運決定
+     ===================================== */
+
+  function rollLuck(){
+
+    result.classList.add('rolling');
+
+    result.textContent =
+      '…';
+
+    diceName.textContent =
+      '3d6×5 を振っています…';
+
+
+    setTimeout(() => {
+
+      const dice1 =
+        randomInt(6);
+
+      const dice2 =
+        randomInt(6);
+
+      const dice3 =
+        randomInt(6);
+
+
+      const total =
+        dice1 + dice2 + dice3;
+
+
+      const luck =
+        total * 5;
+
+
+      result.textContent =
+        luck;
+
+
+      diceName.textContent =
+        `🍀 ${dice1} + ${dice2} + ${dice3} = ` +
+        `${total} × 5 → ${luck}`;
+
+
+      result.classList.remove('rolling');
+
+
+      history.unshift(
+        `🍀 幸運：${dice1} + ${dice2} + ${dice3} = ` +
+        `${total} × 5 → ${luck}`
+      );
+
+
+      if(history.length > 10){
+
+        history.pop();
+
+      }
+
+
+      renderHistory();
+
+    },180);
+
+  }
+
+
+
+  /* =====================================
+     1d6
+     ===================================== */
+
+  function rollD6(){
+
+    result.classList.add('rolling');
+
+    result.textContent =
+      '…';
+
+    diceName.textContent =
+      '1d6 を振っています…';
+
+
+    setTimeout(() => {
+
+      const value =
+        randomInt(6);
+
+
+      result.textContent =
+        value;
+
+      diceName.textContent =
+        `1d6 → ${value}`;
+
+
+      result.classList.remove('rolling');
+
+
+      history.unshift(
+        `1d6 → ${value}`
+      );
+
+
+      if(history.length > 10){
+
+        history.pop();
+
+      }
+
+
+      renderHistory();
+
+    },180);
+
+  }
+
+
+
+  /* =====================================
+     ボタンを動かす
+     ===================================== */
+
+  typeSelect.addEventListener(
+    'change',
+    changeCharacterType
+  );
+
+
+  statSelect.addEventListener(
+    'change',
+    updateTarget
+  );
+
+
+  document
+    .getElementById('checkButton')
+    .addEventListener(
+      'click',
+      abilityCheck
+    );
+
+document
+  .getElementById('skillCheckButton')
+  .addEventListener(
+    'click',
+    rollD100
+  );
+
+  document
+    .getElementById('d100')
+    .addEventListener(
+      'click',
+      rollD100
+    );
+
+
+  document
+    .getElementById('3d6')
+    .addEventListener(
+      'click',
+      rollLuck
+    );
+
+
+  document
+    .getElementById('d6')
+    .addEventListener(
+      'click',
+      rollD6
+    );
+
+
+
+  /* =====================================
+     記録を消去
+     ===================================== */
+
+  document
+    .getElementById('clearHistory')
+    .addEventListener(
+      'click',
+      () => {
+
+        history.length = 0;
+
+        renderHistory();
+
+      }
+    );
+
+
+
+  /* =====================================
+     最初に一度実行
+     ===================================== */
+
+  changeCharacterType();
+
+})();
+
+</script>
+
+</body>
+</html>
