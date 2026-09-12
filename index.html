@@ -261,6 +261,64 @@
     font-size:1.1rem;
   }
 
+ /* ==============================
+     正気度判定
+     ============================== */
+
+  .sanity-area{
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+  }
+
+  .sanity-title{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+
+  #sanityValue{
+    text-align:center;
+    font-size:1.5rem;
+    font-weight:900;
+    color:var(--accent);
+    margin:10px 0;
+  }
+
+  #sanityCheckButton{
+    width:100%;
+    min-height:64px;
+    margin-top:6px;
+    appearance:none;
+    border:0;
+    border-radius:16px;
+    padding:12px 18px;
+    font:inherit;
+    font-size:1.25rem;
+    font-weight:800;
+    cursor:pointer;
+    color:#17201a;
+    background:var(--accent);
+    box-shadow:
+      0 5px 0 #9d803a,
+      0 10px 20px rgba(0,0,0,.22);
+    touch-action:manipulation;
+  }
+
+  #sanityCheckButton:active{
+    transform:translateY(4px);
+    box-shadow:0 1px 0 #9d803a;
+  }
+
+  #sanityResult{
+    text-align:center;
+    min-height:2em;
+    margin-top:12px;
+    padding:12px;
+    font-size:1.5rem;
+    font-weight:900;
+  }
+
   /* ==============================
      通常ダイス
      ============================== */
@@ -665,6 +723,30 @@
      
     </div>
 
+<!-- =====================================
+     正気度判定
+     ===================================== -->
+
+<div class="sanity-area">
+
+  <div class="sanity-title">
+    正気度判定
+  </div>
+
+  <div id="sanityValue">
+    正気度：50
+  </div>
+
+  <button id="sanityCheckButton" type="button">
+    🎲 正気度判定！
+  </button>
+
+  <div id="sanityResult">
+    正気度判定をすると、失敗時に正気度が3減少します。
+  </div>
+
+</div>
+
   </div>
 
 </section>
@@ -795,6 +877,11 @@
   const skillResult =
     document.getElementById('skillResult');
 
+  const sanityValue =
+    document.getElementById('sanityValue');
+
+  const sanityResult =
+    document.getElementById('sanityResult');
 
 
   /* =====================================
@@ -957,6 +1044,7 @@
 
   const history = [];
 
+ let currentSanity = 50;
 
   function renderHistory(){
 
@@ -1024,6 +1112,15 @@
 
     updateTarget();
 
+  currentSanity = type.POW;
+
+  sanityValue.textContent =
+    `正気度：${currentSanity}`;
+
+  sanityResult.textContent =
+    "正気度判定をすると、失敗時に正気度が3減少します。";
+
+  sanityResult.className = "";
 
     checkResult.textContent =
       "";
@@ -1378,7 +1475,96 @@
 
 
 
+
+
   /* =====================================
+     正気度判定
+     ===================================== */
+
+  function sanityCheck(){
+
+const targetValue =
+  currentSanity;
+
+
+    result.classList.add('rolling');
+
+    result.textContent =
+      '…';
+
+    diceName.textContent =
+      '1d100 を振っています…';
+
+
+    setTimeout(() => {
+
+      const dice =
+        randomInt(100);
+
+
+      result.textContent =
+        dice;
+
+      diceName.textContent =
+        `1d100 → ${dice}`;
+
+
+      result.classList.remove('rolling');
+
+
+      const success =
+        dice <= targetValue;
+
+
+      if(success){
+
+        sanityResult.textContent =
+          `🎉 成功！　${dice} ≦ ${targetValue}`;
+
+        sanityResult.className =
+          "success";
+
+      }else{
+
+        currentSanity =
+          Math.max(0, currentSanity - 3);
+
+        sanityResult.textContent =
+          `❌ 失敗……　正気度 -3　→ ${currentSanity}`;
+
+        sanityResult.className =
+          "failure";
+
+      }
+
+
+      sanityValue.textContent =
+        `正気度：${currentSanity}`;
+
+
+      history.unshift(
+        `正気度 ${targetValue}% → ${dice} → ` +
+        (success
+          ? "成功"
+          : `失敗・正気度 -3 → ${currentSanity}`)
+      );
+
+
+      if(history.length > 10){
+
+        history.pop();
+
+      }
+
+
+      renderHistory();
+
+
+    },180);
+
+  }
+
+ /* =====================================
      1d6
      ===================================== */
 
@@ -1459,6 +1645,13 @@ document
     rollD100
   );
 
+document
+  .getElementById('sanityCheckButton')
+  .addEventListener(
+    'click',
+    sanityCheck
+  );
+
   document
     .getElementById('d100')
     .addEventListener(
@@ -1513,5 +1706,7 @@ document
 
 </script>
 
+</body>
+</html>
 </body>
 </html>
